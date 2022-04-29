@@ -1,0 +1,9 @@
+@import "./variables/variables.scss";
+
+.dashboard{
+	background-color:$primaryColor;
+
+	&__aside{
+		@include Quicksand;
+	}
+}

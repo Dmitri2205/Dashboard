@@ -1,0 +1,14 @@
+$baseColor:#367BF5;
+$primaryColor:#E2F0F0;
+$gray:#5E6366;
+
+@mixin RacingSans{
+	font-family: 'Racing Sans One', cursive;
+}
+
+@mixin Roboto{
+	font-family: 'Roboto', sans-serif;
+}
+@mixin Quicksand{
+	font-family: 'Quicksand', sans-serif;
+}
