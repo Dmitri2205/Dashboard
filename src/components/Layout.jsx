@@ -30,7 +30,53 @@ export default function Layout(props) {
 		}
 	]);
 
-	const [data,setData] = useState([]);
+	const [data,setData] = useState([
+		{
+			name:"Data1",
+			summary1:Math.floor(Math.random() * 1000),
+			summary2:Math.floor(Math.random() * 1000),
+			summary3:Math.floor(Math.random() * 1000),
+			summary4:Math.floor(Math.random() * 1000),
+			summary5:Math.floor(Math.random() * 1000),
+
+		},
+		{
+			name:"Data2",
+			summary1:Math.floor(Math.random() * 1000),
+			summary2:Math.floor(Math.random() * 1000),
+			summary3:Math.floor(Math.random() * 1000),
+			summary4:Math.floor(Math.random() * 1000),
+			summary5:Math.floor(Math.random() * 1000),
+
+		},
+		{
+			name:"Data3",
+			summary1:Math.floor(Math.random() * 1000),
+			summary2:Math.floor(Math.random() * 1000),
+			summary3:Math.floor(Math.random() * 1000),
+			summary4:Math.floor(Math.random() * 1000),
+			summary5:Math.floor(Math.random() * 1000),
+
+		},
+		{
+			name:"Data4",
+			summary1:Math.floor(Math.random() * 1000),
+			summary2:Math.floor(Math.random() * 1000),
+			summary3:Math.floor(Math.random() * 1000),
+			summary4:Math.floor(Math.random() * 1000),
+			summary5:Math.floor(Math.random() * 1000),
+
+		},
+		{
+			name:"Data5",
+			summary1:Math.floor(Math.random() * 1000),
+			summary2:Math.floor(Math.random() * 1000),
+			summary3:Math.floor(Math.random() * 1000),
+			summary4:Math.floor(Math.random() * 1000),
+			summary5:Math.floor(Math.random() * 1000),
+
+		},
+	]);
 
 	const [sortType,setSortType] = useState("all");
 
@@ -68,6 +114,10 @@ export default function Layout(props) {
 		},	
 	]
 
+	const createNew = () => {
+		console.log("create")
+	}
+
 	return(
 		<main className="container mx-auto bg-white rounded-sm mt-[20px]" /*style={{overflow:"hidden"}}*/>
 			<Header/>
@@ -91,9 +141,14 @@ export default function Layout(props) {
 		    			})
 		    		}
 		    	</Switcher>
-		    		<p className={`${dashboard_styles.aside__create} flex justify-start items-center rounded-lg w-[180px] h-[46px] ml-[7px] mb-[32px] text-xl bg-white`}>
+		    		<p className={`${dashboard_styles.aside__create} flex justify-start items-center rounded-lg w-[180px] h-[46px] ml-[7px] mb-[32px] text-xl bg-white cursor-pointer`}
+		    			onClick={e => createNew()}
+		    		>
 		    			<img className="w-[16px] h-[16px] mr-[16px] ml-[24px]" src={plus} alt="add"/>
-	    				<span className="justify-self-start" style={{color:"#367BF5",fontWeight:"bold"}}>Create new</span>
+	    				
+	    				<span className="justify-self-start" style={{color:"#367BF5",fontWeight:"bold"}}>
+	    					Create new
+	    				</span>
 		    		</p>
 		    		{
 		    			asideSwitches.map((switcher,i)=>{

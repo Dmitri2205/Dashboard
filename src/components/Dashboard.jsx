@@ -4,6 +4,10 @@ import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { DateRange } from 'react-date-range';
 import { addDays } from 'date-fns';
+import AllDataIcon from "../images/icons/AllDataIcon.jsx";
+import DownloadIcon from "../images/icons/DownloadIcon.jsx";
+import DataRow from "../modules/DataRow.jsx";
+
 
 
 export default function Dashboard(props){
@@ -37,18 +41,25 @@ export default function Dashboard(props){
 						{children[3]}
 						{children[4]}
 					</div>
-					<div className={`${styles.dashboard__table} flex flex-col ml-[10%] mt-[12px] w-full`}>
+					<div className={`${styles.dashboard__table} flex flex-col ml-[4%] mt-[12px] w-full`}>
 						<div className={`${styles.table__header} flex justify-between items-center `}>
-							<p className="text-4xl md:text-2xl`">Dashboard</p>
-							<div className={`${styles.header__inputs} inline-flex`}>
+							<p className="text-2xl md:text-xl`">Dashboard</p>
+							<div className={`${styles.header__inputs} inline-flex items-center`}>
 								<label className="inline-flex items-center rounded-sm border-2 border-solid border-gray-300 px-3">
-								<input type="text" value={processedDate("startDate")}/>
-								-
-								<input type="text" value={processedDate("endDate")}/>
-								<span onClick={e=>showPicker(!pickerShown)} style={pickerShown ? {transform:"rotateY(180deg)"} : {transform:"rotateY(0deg)"}}></span>
+									<p>{processedDate("startDate")}</p>
+									<span className="dot" style={{display:"inline-flex",width:"4px",height:"4px",borderRadius:"50%",backgroundColor:"black",margin:"0 1px"}}></span>
+									<p>{processedDate("endDate")}</p>
+									<span onClick={e=>showPicker(!pickerShown)} style={pickerShown ? {transform:"rotateX(180deg) translateY(5px)"} : {transform:"rotateX(0deg)"}}></span>
 								</label>
+								<span className="inline-flex justify-center items-center rounded-sm bg-white ml-2">{AllDataIcon()}</span>
+								<span className="inline-flex justify-center items-center rounded-sm bg-white ml-2">{DownloadIcon()}</span>
 							</div>
 						</div>
+						{
+							data.map((datacell,i)=>{
+								return <DataRow key={datacell.name} name={datacell.name} rowData={datacell} />
+							})
+						}
 					</div>
 				<div className={`${styles.dashboard__datePicker} ${pickerShown ? "" : styles.hidden}`}>
 					<DateRange
