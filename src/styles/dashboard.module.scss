@@ -57,11 +57,28 @@
 					&:nth-child(2)>svg{
 						width:11px;
 						height: 10px;
+						path{
+							transition:all .3s;
+						}
+					}
+					&:hover svg>path{
+						transition:all .3s;
+						fill:$baseColor;
 					}
 				}
 			}
 		}
-
+		.table__sortRow{
+			color: $gray;
+			.sortRow__arrows>div>svg>path{
+				transition: all .3s;
+			}
+			.sortRow__arrows>div>svg:nth-child(2){
+				transform: rotateZ(180deg);
+				margin-top: 4px;
+				margin-left: -7%;
+			}
+		}	
 	}
 	&__datePicker{
 		display: flex;
@@ -75,4 +92,20 @@
 			display: none;
 		}
 	}
+}
+
+:global(.item-exit ){
+	opacity: 1;
+	transition: opacity 500ms ease-out;
+}
+:global(.item-exit-active ){
+	opacity: 0;
+	transition: opacity 500ms ease-out;
+}
+:global(.item-enter){
+	opacity: 0;
+}
+:global(.item-enter-active){
+	opacity: 1;
+	transition: opacity 500ms ease-out;
 }

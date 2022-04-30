@@ -5,16 +5,53 @@ import 'react-date-range/dist/theme/default.css';
 import { DateRange } from 'react-date-range';
 import { addDays } from 'date-fns';
 import AllDataIcon from "../images/icons/AllDataIcon.jsx";
+import Up from "../images/icons/Up.jsx";
 import DownloadIcon from "../images/icons/DownloadIcon.jsx";
-import DataRow from "../modules/DataRow.jsx";
-
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 
 export default function Dashboard(props){
 
-	const {children,data} = props;
+	const {children,data,sortType} = props;
 
 	const [pickerShown,showPicker] = useState(false)
+	
+	const [sortDirection,setSortDirection] = useState("");
+
+	const [reversed,setReversed] = useState(false)
+
+	const [sortedData,setSortedData] = useState([]);
+
+	useEffect(()=>{
+		setSortDirection("down")
+	},[null])
+
+	useEffect(() => {
+		filterFunc(data);
+	},[null,sortType,data])
+
+	useEffect(()=>{
+		if(sortedData.length !== 0){
+			sortFunc(sortedData)
+		}
+	},[sortDirection])
+
+	const filterFunc = (toSort) => {
+		let sorted = sortType === "even" ? toSort.filter((data,i) => i % 2 === 1) :
+					sortType === "odd" ? toSort.filter((data,i) => i % 2 === 0) :
+					toSort;
+		sortFunc(reversed ? sorted.reverse() : sorted)
+	}
+
+	const sortFunc = (sorted) => {
+		let copyed = Array.from(sorted)
+		let orderedData = copyed
+		if(sortDirection === "up" && !reversed || sortDirection === "down" && reversed){
+			setReversed(!reversed)
+			orderedData.reverse();
+		}
+		setSortedData(orderedData);
+	}
 
 	const [dates,setDates] = useState([
 	  {
@@ -55,11 +92,43 @@ export default function Dashboard(props){
 								<span className="inline-flex justify-center items-center rounded-sm bg-white ml-2">{DownloadIcon()}</span>
 							</div>
 						</div>
+						<div className={`${styles.table__sortRow} flex flex-row justify-between mt-[38px]`}>
+						<label className={`${styles.sortRow__arrows} inline-flex items-center`}>
+							<div className="flex flex-col w-4 justify-center items-center">
+								{Up({color:sortDirection === "up" ? "#069697" : "#C6CACC",cb:setSortDirection,direction:"up"})}
+								{Up({color:sortDirection === "down" ? "#069697" : "#C6CACC",cb:setSortDirection,direction:"down"})}
+							</div>
+							<p>Data</p>
+						</label>
+							<ul className="inline-flex justify-between w-[83.5%] columns-5">
+								{
+									[1,2,3,4,5].map((item)=>{
+										return <li key={`Summary${item}`} className="text-base">Summary{item}</li>
+									})
+								}
+							</ul>
+						</div>
+						<TransitionGroup component="ul">
 						{
-							data.map((datacell,i)=>{
-								return <DataRow key={datacell.name} name={datacell.name} rowData={datacell} />
+							sortedData.map((datacell,i)=>{
+								return(
+								<CSSTransition key={datacell.name} 
+											   timeout={500}
+											   in={true}
+											   classNames="item"
+								>
+								<li className={`inline-flex justify-between items-center border-solid border-b-2 border-gray-300 w-full h-[44px] mb-[20px]`}>
+									{
+										Object.values(datacell).map((value,i)=>{
+											return <p key={value.toString()} className="min-w-[50px] text-right">{value}</p>
+										})
+									}			
+								</li>
+								</CSSTransition>
+								)
 							})
 						}
+						</TransitionGroup>
 					</div>
 				<div className={`${styles.dashboard__datePicker} ${pickerShown ? "" : styles.hidden}`}>
 					<DateRange

@@ -33,56 +33,52 @@ export default function Layout(props) {
 	const [data,setData] = useState([
 		{
 			name:"Data1",
-			summary1:Math.floor(Math.random() * 1000),
-			summary2:Math.floor(Math.random() * 1000),
-			summary3:Math.floor(Math.random() * 1000),
-			summary4:Math.floor(Math.random() * 1000),
-			summary5:Math.floor(Math.random() * 1000),
+			summary1:Math.floor(Math.random() * 1001),
+			summary2:Math.floor(Math.random() * 801),
+			summary3:Math.floor(Math.random() * 401),
+			summary4:Math.floor(Math.random() * 201),
+			summary5:Math.floor(Math.random() * 101),
 
 		},
 		{
 			name:"Data2",
-			summary1:Math.floor(Math.random() * 1000),
-			summary2:Math.floor(Math.random() * 1000),
-			summary3:Math.floor(Math.random() * 1000),
-			summary4:Math.floor(Math.random() * 1000),
-			summary5:Math.floor(Math.random() * 1000),
+			summary1:Math.floor(Math.random() * 1002),
+			summary2:Math.floor(Math.random() * 802),
+			summary3:Math.floor(Math.random() * 402),
+			summary4:Math.floor(Math.random() * 202),
+			summary5:Math.floor(Math.random() * 102),
 
 		},
 		{
 			name:"Data3",
-			summary1:Math.floor(Math.random() * 1000),
-			summary2:Math.floor(Math.random() * 1000),
-			summary3:Math.floor(Math.random() * 1000),
-			summary4:Math.floor(Math.random() * 1000),
-			summary5:Math.floor(Math.random() * 1000),
+			summary1:Math.floor(Math.random() * 1003),
+			summary2:Math.floor(Math.random() * 803),
+			summary3:Math.floor(Math.random() * 403),
+			summary4:Math.floor(Math.random() * 203),
+			summary5:Math.floor(Math.random() * 103),
 
 		},
 		{
 			name:"Data4",
-			summary1:Math.floor(Math.random() * 1000),
-			summary2:Math.floor(Math.random() * 1000),
-			summary3:Math.floor(Math.random() * 1000),
-			summary4:Math.floor(Math.random() * 1000),
-			summary5:Math.floor(Math.random() * 1000),
+			summary1:Math.floor(Math.random() * 1004),
+			summary2:Math.floor(Math.random() * 804),
+			summary3:Math.floor(Math.random() * 404),
+			summary4:Math.floor(Math.random() * 204),
+			summary5:Math.floor(Math.random() * 104),
 
 		},
 		{
 			name:"Data5",
-			summary1:Math.floor(Math.random() * 1000),
-			summary2:Math.floor(Math.random() * 1000),
-			summary3:Math.floor(Math.random() * 1000),
-			summary4:Math.floor(Math.random() * 1000),
-			summary5:Math.floor(Math.random() * 1000),
+			summary1:Math.floor(Math.random() * 1005),
+			summary2:Math.floor(Math.random() * 805),
+			summary3:Math.floor(Math.random() * 405),
+			summary4:Math.floor(Math.random() * 205),
+			summary5:Math.floor(Math.random() * 105),
 
 		},
 	]);
 
 	const [sortType,setSortType] = useState("all");
-
-	useEffect(()=>{
-		sortData()
-	},[sortType])
 
 
 	const chooseCategory = (i) => {
@@ -90,10 +86,6 @@ export default function Layout(props) {
 		cat.forEach(category => category.selected = false)
 		cat[i].selected = true
 		setCategories(cat);
-	}
-
-	const sortData = () => {
-		console.log(sortType);
 	}
 
 	const asideSwitches = [
@@ -115,13 +107,23 @@ export default function Layout(props) {
 	]
 
 	const createNew = () => {
-		console.log("create")
+		let newArray = [...data];
+		newArray.push({
+			name:`Data${newArray.length+1}`,
+			summary1:Math.floor(Math.random() * 1000),
+			summary2:Math.floor(Math.random() * 800),
+			summary3:Math.floor(Math.random() * 400),
+			summary4:Math.floor(Math.random() * 200),
+			summary5:Math.floor(Math.random() * 100),
+
+		})
+		return setData(newArray);
 	}
 
 	return(
 		<main className="container mx-auto bg-white rounded-sm mt-[20px]" /*style={{overflow:"hidden"}}*/>
 			<Header/>
-		    <Dashboard data={data}>
+		    <Dashboard data={data} sortType={sortType}>
 		    	<Switcher>
 		    		{
 		    			categories.map((category,i) => {
@@ -141,6 +143,7 @@ export default function Layout(props) {
 		    			})
 		    		}
 		    	</Switcher>
+
 		    		<p className={`${dashboard_styles.aside__create} flex justify-start items-center rounded-lg w-[180px] h-[46px] ml-[7px] mb-[32px] text-xl bg-white cursor-pointer`}
 		    			onClick={e => createNew()}
 		    		>
@@ -150,6 +153,7 @@ export default function Layout(props) {
 	    					Create new
 	    				</span>
 		    		</p>
+		    		
 		    		{
 		    			asideSwitches.map((switcher,i)=>{
 		    				return (
@@ -168,6 +172,7 @@ export default function Layout(props) {
 		    				)
 		    			})
 		    		}
+
 		    </Dashboard>
 		</main>
 	)
