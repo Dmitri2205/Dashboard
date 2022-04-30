@@ -105,12 +105,15 @@ export default function Dashboard(props){
 		let searchString = search.find((item,i)=>{
 			return item.value.length > 0 
 		}).value.toLowerCase()
+		console.log(searchString)
 		 let result = data.filter((data,ID)=>{
 			return Object.values(data).find((val,i)=>{
 				if(i === 0){
 					return val.toString().toLowerCase().includes(searchString)
+					console.log("Name:"+searchString)
 				}else{
 					return val.toString().toLowerCase() === searchString
+					console.log("summary:"+searchString)
 				}
 			});
 		})
