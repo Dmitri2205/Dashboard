@@ -22,6 +22,27 @@ export default function Dashboard(props){
 
 	const [sortedData,setSortedData] = useState([]);
 
+	const [search,setSearch] = useState([
+		{
+			value:""
+		},
+		{
+			value:""
+		},
+		{
+			value:""
+		},
+		{
+			value:""
+		},
+		{
+			value:""
+		},
+		{
+			value:""
+		}
+	])
+
 	useEffect(()=>{
 		setSortDirection("down")
 	},[null])
@@ -36,11 +57,11 @@ export default function Dashboard(props){
 		}
 	},[sortDirection])
 
-	const filterFunc = (toSort) => {
-		let sorted = sortType === "even" ? toSort.filter((data,i) => i % 2 === 1) :
-					sortType === "odd" ? toSort.filter((data,i) => i % 2 === 0) :
-					toSort;
-		sortFunc(reversed ? sorted.reverse() : sorted)
+	const filterFunc = (toFilter) => {
+		let filtered = sortType === "even" ? toFilter.filter((data,i) => i % 2 === 1) :
+					sortType === "odd" ? toFilter.filter((data,i) => i % 2 === 0) :
+					toFilter;
+		sortFunc(reversed ? filtered.reverse() : filtered)
 	}
 
 	const sortFunc = (sorted) => {
@@ -65,8 +86,37 @@ export default function Dashboard(props){
 	const processedDate = (type) => {
 		let date = dates[0][type].toString().split(" ")
 		return date[1] + " " + date[2] + "," + date[3]
-
 	}
+
+	const inputsHandler = (val,i) => {
+			let inputs = Array.from(search)
+			inputs[i].value = val
+			setSearch(inputs)
+		if(val !== ""){
+			setTimeout(()=>{
+				searchData()
+			},300)
+		}else{
+			filterFunc(data)
+		}
+	}
+
+	const searchData = () => {
+		let searchString = search.find((item,i)=>{
+			return item.value.length > 0 
+		}).value.toLowerCase()
+		 let result = data.filter((data,ID)=>{
+			return Object.values(data).find((val,i)=>{
+				if(i === 0){
+					return val.toString().toLowerCase().includes(searchString)
+				}else{
+					return val.toString().toLowerCase() === searchString
+				}
+			});
+		})
+		filterFunc(result)
+	}
+
 
 	return(
 		<section>
@@ -112,7 +162,7 @@ export default function Dashboard(props){
 						{
 							sortedData.map((datacell,i)=>{
 								return(
-								<CSSTransition key={datacell.name} 
+								<CSSTransition key={`${datacell.name}${i}`} 
 											   timeout={500}
 											   in={true}
 											   classNames="item"
@@ -129,6 +179,16 @@ export default function Dashboard(props){
 							})
 						}
 						</TransitionGroup>
+					<div className={`${styles.table__inputs} flex justify-start`}>
+						{search.map((item,i)=>{
+							return <input key={i} type="text" 
+										  value={item.value}
+										  placeholder={i === 0 ? "Search..." : null} 
+										  onChange={(e) => {inputsHandler(e.target.value,i)}}
+										  className="rounded-sm border-2 border-solid border-gray-300"
+									/>
+						})}
+					</div>	
 					</div>
 				<div className={`${styles.dashboard__datePicker} ${pickerShown ? "" : styles.hidden}`}>
 					<DateRange
