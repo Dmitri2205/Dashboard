@@ -44,10 +44,10 @@ export default function Dashboard(props) {
 
     useEffect(() => {
         setSortDirection("down")
-    },[null])
+    }, [null])
 
     useEffect(() => {
-	        filterFunc(data);
+        filterFunc(data);
     }, [sortType, data])
 
     useEffect(() => {
@@ -57,38 +57,38 @@ export default function Dashboard(props) {
     }, [sortDirection])
 
     const filterFunc = (toFilter) => {
-    	let splitedName = (name) => {
-    		let reg = new RegExp(/\d{1,}/gm)
-    		let result = name.match(reg)
-    		return Number(result)
-    	}
+        let splitedName = (name) => {
+            let reg = new RegExp(/\d{1,}/gm)
+            let result = name.match(reg)
+            return Number(result)
+        }
         let filtered = undefined;
-        if(sortType === "even"){
-	        filtered = toFilter.filter((item, i) => {
-         		return i !== 0 ? Math.floor(i % 2 === 1) : Math.floor(splitedName(item.name)) % 2 !== 1
-         })
-        }else if(sortType === "odd"){
-        	filtered = toFilter.filter((item, i) => {
-        		return i !== 0 ? Math.floor(i % 2) === 0 : Math.floor(splitedName(item.name)) % 2 !== 0
-        	})
-        }else{
+        if (sortType === "even") {
+            filtered = toFilter.filter((item, i) => {
+                return i !== 0 ? Math.floor(i % 2 === 1) : Math.floor(splitedName(item.name)) % 2 !== 1
+            })
+        } else if (sortType === "odd") {
+            filtered = toFilter.filter((item, i) => {
+                return i !== 0 ? Math.floor(i % 2) === 0 : Math.floor(splitedName(item.name)) % 2 !== 0
+            })
+        } else {
             filtered = toFilter
         }
 
-    	if(search.some((item) => item.value.length > 0)){
-    		filtered = searchData(false,filtered)
-    	}
+        if (search.some((item) => item.value.length > 0)) {
+            filtered = searchData(false, filtered)
+        }
         sortFunc(reversed ? filtered.reverse() : filtered)
     }
 
     const sortFunc = (sorted) => {
-            let copyed = Array.from(sorted)
-            let orderedData = copyed
-            if (sortDirection === "up" && !reversed || sortDirection === "down" && reversed) {
-                setReversed(!reversed)
-                orderedData.reverse()
-            }
-            setSortedData(orderedData)
+        let copyed = Array.from(sorted)
+        let orderedData = copyed
+        if (sortDirection === "up" && !reversed || sortDirection === "down" && reversed) {
+            setReversed(!reversed)
+            orderedData.reverse()
+        }
+        setSortedData(orderedData)
     }
 
     const [dates, setDates] = useState([{
@@ -109,32 +109,35 @@ export default function Dashboard(props) {
         setSearch(inputs)
         if (val !== "") {
             setTimeout(() => {
-                searchData(true)
+                searchData(true,null,i)
             }, 300)
         } else {
             filterFunc(data)
         }
     }
 
-    const searchData = (fromInput,arr = null) => {
+    const searchData = (fromInput, arr = null,i) => {
         let searchString = search.find((item, i) => {
             return item.value.length > 0
         }).value
         searchString = searchString.toLowerCase()
         let arrayToProceed = arr ? arr : data
-        let result = arrayToProceed.filter((item, ID) => {
-            return Object.values(item).find((val, i) => {
-                if (i === 0) {
-                    return val.toString().toLowerCase().includes(searchString)
+        let result = arrayToProceed.filter(({...item}, ID) => {
+                if (item.name.toLowerCase().includes(searchString)) {
+                    return item
                 } else {
-                    return val.toString().toLowerCase() === searchString
+                	let obj = Object.entries(item);
+                	let res = undefined
+                	obj.forEach((pair,item)=>{
+                		res = Number(pair[1]) === Number(searchString)
+                	})
+                	return res
                 }
             });
-        })
-        if(fromInput){
-	        filterFunc(result)
-        }else{
-        	return result
+        if (fromInput) {
+            filterFunc(result)
+        } else {
+            return result
         }
     }
 
