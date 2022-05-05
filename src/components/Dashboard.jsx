@@ -57,10 +57,27 @@ export default function Dashboard(props) {
     }, [sortDirection])
 
     const filterFunc = (toFilter) => {
-        let filtered = sortType === "even" ? toFilter.filter((data, i) => i % 2 === 1) :
-            sortType === "odd" ? toFilter.filter((data, i) => i % 2 === 0) :
-            toFilter;
+    	let splitedName = (name) => {
+    		let reg = new RegExp(/\d{1,}/gm)
+    		let result = name.match(reg)
+    		return Number(result)
+    	}
+        let filtered = undefined;
+        if(sortType === "even"){
+	        filtered = toFilter.filter((item, i) => {
+         		return i !== 0 ? Math.floor(i % 2 === 1) : Math.floor(splitedName(item.name)) % 2 !== 1
+         })
+        }else if(sortType === "odd"){
+        	filtered = toFilter.filter((item, i) => {
+        		return i !== 0 ? Math.floor(i % 2) === 0 : Math.floor(splitedName(item.name)) % 2 !== 0
+        	})
+        }else{
+            filtered = toFilter
+        }
 
+    	if(search.some((item) => item.value.length > 0)){
+    		filtered = searchData(false,filtered)
+    	}
         sortFunc(reversed ? filtered.reverse() : filtered)
     }
 
@@ -92,20 +109,21 @@ export default function Dashboard(props) {
         setSearch(inputs)
         if (val !== "") {
             setTimeout(() => {
-                searchData()
+                searchData(true)
             }, 300)
         } else {
             filterFunc(data)
         }
     }
 
-    const searchData = () => {
+    const searchData = (fromInput,arr = null) => {
         let searchString = search.find((item, i) => {
             return item.value.length > 0
         }).value
         searchString = searchString.toLowerCase()
-        let result = data.filter((data, ID) => {
-            return Object.values(data).find((val, i) => {
+        let arrayToProceed = arr ? arr : data
+        let result = arrayToProceed.filter((item, ID) => {
+            return Object.values(item).find((val, i) => {
                 if (i === 0) {
                     return val.toString().toLowerCase().includes(searchString)
                 } else {
@@ -113,7 +131,11 @@ export default function Dashboard(props) {
                 }
             });
         })
-        filterFunc(result)
+        if(fromInput){
+	        filterFunc(result)
+        }else{
+        	return result
+        }
     }
 
 
