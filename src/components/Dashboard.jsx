@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import styles from "../styles/dashboard.module.scss";
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
@@ -10,121 +10,117 @@ import DownloadIcon from "../images/icons/DownloadIcon.jsx";
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 
-export default function Dashboard(props){
+export default function Dashboard(props) {
 
-	const {children,data,sortType} = props;
+    const { children, data, sortType } = props;
 
-	const [pickerShown,showPicker] = useState(false)
-	
-	const [sortDirection,setSortDirection] = useState("");
+    const [pickerShown, showPicker] = useState(false)
 
-	const [reversed,setReversed] = useState(false)
+    const [sortDirection, setSortDirection] = useState("");
 
-	const [sortedData,setSortedData] = useState([]);
+    const [reversed, setReversed] = useState(false)
 
-	const [search,setSearch] = useState([
-		{
-			value:""
-		},
-		{
-			value:""
-		},
-		{
-			value:""
-		},
-		{
-			value:""
-		},
-		{
-			value:""
-		},
-		{
-			value:""
-		}
-	])
+    const [sortedData, setSortedData] = useState([]);
 
-	useEffect(()=>{
-		setSortDirection("down")
-	},[null])
+    const [search, setSearch] = useState([{
+            value: ""
+        },
+        {
+            value: ""
+        },
+        {
+            value: ""
+        },
+        {
+            value: ""
+        },
+        {
+            value: ""
+        },
+        {
+            value: ""
+        }
+    ])
 
-	useEffect(() => {
-		filterFunc(data);
-	},[null,sortType,data])
+    useEffect(() => {
+        setSortDirection("down")
+    },[null])
 
-	useEffect(()=>{
-		if(sortedData.length !== 0){
-			sortFunc(sortedData)
-		}
-	},[sortDirection])
+    useEffect(() => {
+	        filterFunc(data);
+    }, [sortType, data])
 
-	const filterFunc = (toFilter) => {
-		let filtered = sortType === "even" ? toFilter.filter((data,i) => i % 2 === 1) :
-					sortType === "odd" ? toFilter.filter((data,i) => i % 2 === 0) :
-					toFilter;
-		sortFunc(reversed ? filtered.reverse() : filtered)
-	}
+    useEffect(() => {
+        if (sortedData.length !== 0) {
+            sortFunc(sortedData)
+        }
+    }, [sortDirection])
 
-	const sortFunc = (sorted) => {
-		let copyed = Array.from(sorted)
-		let orderedData = copyed
-		if(sortDirection === "up" && !reversed || sortDirection === "down" && reversed){
-			setReversed(!reversed)
-			orderedData.reverse();
-		}
-		setSortedData(orderedData);
-	}
+    const filterFunc = (toFilter) => {
+        let filtered = sortType === "even" ? toFilter.filter((data, i) => i % 2 === 1) :
+            sortType === "odd" ? toFilter.filter((data, i) => i % 2 === 0) :
+            toFilter;
 
-	const [dates,setDates] = useState([
-	  {
-	    startDate: new Date(),
-	    endDate: addDays(new Date(), 7),
-	    key: 'selection'
-	  }
-	]);
+        sortFunc(reversed ? filtered.reverse() : filtered)
+    }
+
+    const sortFunc = (sorted) => {
+            let copyed = Array.from(sorted)
+            let orderedData = copyed
+            if (sortDirection === "up" && !reversed || sortDirection === "down" && reversed) {
+                setReversed(!reversed)
+                orderedData.reverse()
+            }
+            setSortedData(orderedData)
+    }
+
+    const [dates, setDates] = useState([{
+        startDate: new Date(),
+        endDate: addDays(new Date(), 7),
+        key: 'selection'
+    }]);
 
 
-	const processedDate = (type) => {
-		let date = dates[0][type].toString().split(" ")
-		return date[1] + " " + date[2] + "," + date[3]
-	}
+    const processedDate = (type) => {
+        let date = dates[0][type].toString().split(" ")
+        return date[1] + " " + date[2] + "," + date[3]
+    }
 
-	const inputsHandler = (val,i) => {
-			let inputs = Array.from(search)
-			inputs[i].value = val
-			setSearch(inputs)
-		if(val !== ""){
-			setTimeout(()=>{
-				searchData()
-			},300)
-		}else{
-			filterFunc(data)
-		}
-	}
+    const inputsHandler = (val, i) => {
+        let inputs = Array.from(search)
+        inputs[i].value = val
+        setSearch(inputs)
+        if (val !== "") {
+            setTimeout(() => {
+                searchData()
+            }, 300)
+        } else {
+            filterFunc(data)
+        }
+    }
 
-	const searchData = () => {
-		let searchString = search.find((item,i)=>{
-			return item.value.length > 0 
-		}).value.toLowerCase()
-		console.log(searchString)
-		 let result = data.filter((data,ID)=>{
-			return Object.values(data).find((val,i)=>{
-				if(i === 0){
-					return val.toString().toLowerCase().includes(searchString)
-					console.log("Name:"+searchString)
-				}else{
-					return val.toString().toLowerCase() === searchString
-					console.log("summary:"+searchString)
-				}
-			});
-		})
-		filterFunc(result)
-	}
+    const searchData = () => {
+        let searchString = search.find((item, i) => {
+            return item.value.length > 0
+        }).value
+        searchString = searchString.toLowerCase()
+        let result = data.filter((data, ID) => {
+            return Object.values(data).find((val, i) => {
+                if (i === 0) {
+                    return val.toString().toLowerCase().includes(searchString)
+                } else {
+                    return val.toString().toLowerCase() === searchString
+                }
+            });
+        })
+        filterFunc(result)
+    }
 
 
-	return(
-		<section>
+    return (
+        <section>
 			{children[0]}
-				<div className={`${styles.dashboard} flex flex-column px-[86px] min-h-[250px]`}>
+				<div className={`${styles.dashboard} flex flex-column px-[86px] md:px-6 min-h-[250px]`}>
 					<div className={`${styles.dashboard__aside} mt-[32px]`}>
 						{children[1]}
 						{children[2]}
@@ -182,28 +178,28 @@ export default function Dashboard(props){
 							})
 						}
 						</TransitionGroup>
-					<div className={`${styles.table__inputs} flex justify-start`}>
-						{search.map((item,i)=>{
-							return <input key={i} type="text" 
-										  value={item.value}
-										  placeholder={i === 0 ? "Search..." : null} 
-										  onChange={(e) => {inputsHandler(e.target.value,i)}}
-										  className="rounded-sm border-2 border-solid border-gray-300"
-									/>
-						})}
-					</div>	
+						<div className={`${styles.table__inputs} flex justify-start`}>
+							{search.map((item,i)=>{
+								return <input key={i} type="text" 
+											  value={item.value}
+											  placeholder={i === 0 ? "Search..." : null} 
+											  onChange={(e) => {inputsHandler(e.target.value,i)}}
+											  className="rounded-sm w-1/6 border-2 border-solid border-gray-300"
+										/>
+							})}
+						</div>	
 					</div>
-				<div className={`${styles.dashboard__datePicker} ${pickerShown ? "" : styles.hidden}`}>
-					<DateRange
-					  onChange={item => setDates([item.selection])}
-					  showSelectionPreview={true}
-					  moveRangeOnFirstSelection={false}
-					  months={2}
-					  ranges={dates}
-					  direction="horizontal"
-					/>
-				</div>
+					<div className={`${styles.dashboard__datePicker} ${pickerShown ? "" : styles.hidden}`}>
+						<DateRange
+						  onChange={item => setDates([item.selection])}
+						  showSelectionPreview={true}
+						  moveRangeOnFirstSelection={false}
+						  months={2}
+						  ranges={dates}
+						  direction="horizontal"
+						/>
+					</div>
 				</div>
 		</section>
-	)
+    )
 }

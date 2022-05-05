@@ -90,16 +90,13 @@
 					outline: none;
 				}
 				&:first-child{
-					width: 180px;
+					width: 45%;
 					margin-right: 32px;
 				}
 			}
 			@for $i from 2 through 6{
-				input:nth-child(#{$i}){
-					width: 86px;
-					&:not(:nth-child(2)){
+				input:nth-child(#{$i}):not(:nth-child(2)){
 						margin-left: 11%;
-					}
 				}
 			}
 		}	
@@ -127,9 +124,11 @@
 	transition: opacity 500ms ease-out;
 }
 :global(.item-enter){
+	display: none;
 	opacity: 0;
 }
 :global(.item-enter-active){
-	opacity: 1;
+	display: none;
+	opacity: 0;
 	transition: opacity 500ms ease-out;
 }
