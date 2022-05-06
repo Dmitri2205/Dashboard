@@ -47,7 +47,7 @@ export default function Dashboard(props) {
     }, [null])
 
     useEffect(() => {
-        filterFunc(data, );
+        filterFunc(data);
     }, [sortType, data])
 
     useEffect(() => {
@@ -195,7 +195,7 @@ export default function Dashboard(props) {
 											   in={true}
 											   classNames="item"
 								>
-								<li className={`inline-flex justify-between items-center border-solid border-b-2 border-gray-300 w-full h-[44px] mb-[20px]`}>
+								<li key={`${datacell.name}${i}${i}`} className={`inline-flex justify-between items-center border-solid border-b-2 border-gray-300 w-full h-[44px] mb-[20px]`}>
 									{
 										Object.values(datacell).map((value,i)=>{
 											return <p key={value.toString()} className="min-w-[50px] text-right">{value}</p>
