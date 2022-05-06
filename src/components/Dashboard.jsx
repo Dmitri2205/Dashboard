@@ -47,7 +47,7 @@ export default function Dashboard(props) {
     }, [null])
 
     useEffect(() => {
-        filterFunc(data);
+        filterFunc(data, );
     }, [sortType, data])
 
     useEffect(() => {
@@ -56,27 +56,29 @@ export default function Dashboard(props) {
         }
     }, [sortDirection])
 
-    const filterFunc = (toFilter) => {
-        let splitedName = (name) => {
-            let reg = new RegExp(/\d{1,}/gm)
-            let result = name.match(reg)
-            return Number(result)
-        }
+    const filterFunc = (toFilter, searched = false) => {
         let filtered = undefined;
-        if (sortType === "even") {
-            filtered = toFilter.filter((item, i) => {
-                return i !== 0 ? Math.floor(i % 2 === 1) : Math.floor(splitedName(item.name)) % 2 !== 1
-            })
-        } else if (sortType === "odd") {
-            filtered = toFilter.filter((item, i) => {
-                return i !== 0 ? Math.floor(i % 2) === 0 : Math.floor(splitedName(item.name)) % 2 !== 0
-            })
+        let fieldIndex = search.indexOf(search.find((item) => item.value.length !== 0));
+        if (searched !== true) {
+            let splitedName = (name) => {
+                let reg = new RegExp(/\d{1,}/gm)
+                let result = name.match(reg)
+                return Number(result)
+            }
+            if (sortType === "even") {
+                filtered = toFilter.filter((item, i) => {
+                    return i !== 0 ? Math.floor(i % 2 === 1) : Math.floor(splitedName(item.name)) % 2 !== 1
+                })
+            } else if (sortType === "odd") {
+                filtered = toFilter.filter((item, i) => {
+                    return i !== 0 ? Math.floor(i % 2) === 0 : Math.floor(splitedName(item.name)) % 2 !== 0
+                })
+            } else {
+                filtered = toFilter
+            }
+            filtered = searchData(false, filtered, fieldIndex)
         } else {
             filtered = toFilter
-        }
-
-        if (search.some((item) => item.value.length > 0)) {
-            filtered = searchData(false, filtered)
         }
         sortFunc(reversed ? filtered.reverse() : filtered)
     }
@@ -109,33 +111,35 @@ export default function Dashboard(props) {
         setSearch(inputs)
         if (val !== "") {
             setTimeout(() => {
-                searchData(true,null,i)
+                searchData(true, null, i)
             }, 300)
         } else {
             filterFunc(data)
         }
     }
 
-    const searchData = (fromInput, arr = null,i) => {
+    const searchData = (fromInput, arr = null, fieldIndex) => {
         let searchString = search.find((item, i) => {
             return item.value.length > 0
-        }).value
-        searchString = searchString.toLowerCase()
+        })
+        searchString = searchString && searchString.value ? searchString.value.toLowerCase() : ""
         let arrayToProceed = arr ? arr : data
-        let result = arrayToProceed.filter(({...item}, ID) => {
-                if (item.name.toLowerCase().includes(searchString)) {
-                    return item
-                } else {
-                	let obj = Object.entries(item);
-                	let res = undefined
-                	obj.forEach((pair,item)=>{
-                		res = Number(pair[1]) === Number(searchString)
-                	})
-                	return res
-                }
-            });
+        let result = arrayToProceed.filter(({ ...item }, ID) => {
+            if (item.name.toLowerCase().includes(searchString)) {
+                return item
+            } else {
+                let obj = Object.entries(item);
+                let res = undefined
+                obj.forEach((pair, i) => {
+                    if (i === fieldIndex && Number(pair[1]) === Number(searchString)) {
+                        res = true
+                    }
+                })
+                return res
+            }
+        });
         if (fromInput) {
-            filterFunc(result)
+            filterFunc(result, true)
         } else {
             return result
         }
@@ -145,7 +149,7 @@ export default function Dashboard(props) {
     return (
         <section>
 			{children[0]}
-				<div className={`${styles.dashboard} flex flex-column px-[86px] md:px-6 min-h-[250px]`}>
+				<div className={`${styles.dashboard} flex flex-column lg:px-[86px] md:px-6 min-h-[250px]`}>
 					<div className={`${styles.dashboard__aside} mt-[32px]`}>
 						{children[1]}
 						{children[2]}
